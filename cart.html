@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE-edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Harmony HUB</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+      
+                    
+    <section id="header">
+        <a href="#"><img src="logo/logo1.png" class="logo" alt=""></a>
+
+        <div>
+            <ul id="navbar">
+                <li><a href="HH.html">Home</a></li>
+                <li><a href="shop.html">Shop</a></li>
+                <li><a href="blog.html">Blog</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="contact.html">Contact</a></li>
+                <li><a class="active" href="cart.html" id="lgcart"><i class="fa-solid fa-bag-shopping"></i></a></li>
+                <a href="#" id="close"><i class="fa-solid fa-xmark"></i></a>
+            </ul>
+        </div>
+        <div id="mobile">
+            
+            <a href="cart.html"><i class="fa-solid fa-bag-shopping"></i></a>
+            <i id="bar" class="fa-solid fa-outdent"></i>
+        </div>
+    </section>
+
+    <section id="page-header" class="contact-header">
+
+            <h2>#cart</h2>
+    </section>
+
+    <section id="cart" class="section-p1">
+        <table width="100%">
+            <thead>
+                <tr>
+                    <td>Remove</td>
+                    <td>Image</td>
+                    <td>Product</td>
+                    <td>Price</td>
+                    <td>Quantity</td>
+                    <td>Subtotal</td>
+                </tr>
+            </thead>
+            <tbody id="cart-body">
+                
+            </tbody>
+        </table>
+    </section>
+
+    <section id="cart-add" class="section-p1">
+        <div id="coupon">
+            <h3>Apply Coupon</h3>
+            <div>
+                <input type="text" placeholder="Enter Your Coupon">
+                <button class="normal">Apply</button>
+            </div>
+        </div>
+        <div id="subtotal">
+            <h3>Cart Totals</h3>
+            <table>
+    <tr>
+        <td>Cart Subtotal</td>
+        <td id="cart-subtotal">$0.00</td> <!-- Add id -->
+    </tr>
+    <tr>
+        <td>Shipping</td>
+        <td>Free</td>
+    </tr>
+    <tr>
+        <td><strong>Total</strong></td>
+        <td id="cart-total"><strong>$0.00</strong></td> <!-- Add id -->
+    </tr>
+</table>
+
+            <button class="normal">Proceed to checkout</button>
+        </div>
+    </section>
+
+
+    <footer class="section-p1">
+        <div class="col">
+            <img src="logo/logo1.png" alt="">
+            <h4>Contract</h4>
+            <p><strong>Address:</strong> 39/14 Sarwodaya Road, Aluthgama, Bandaragama, Sri Lanaka</p>
+            <p><strong>Phone:</strong> 075-706-6739</p>
+            <p><strong>Hours:</strong> 10.00 - 20.00, Mon - Sat</p>
+        </div>
+    
+        <div class="follow">
+            <h4>Follow Us</h4>
+            <div class="icon">
+                <i class="fa-brands fa-facebook-f"></i>
+                <i class="fa-brands fa-twitter"></i>
+                <i class="fa-brands fa-instagram"></i>
+                <i class="fa-brands fa-pinterest-p"></i>
+                <i class="fa-brands fa-youtube"></i>
+            </div>
+        </div>
+    
+        <div class="col" >
+            <h4>About</h4>
+            <a href="about.html">About Us</a>
+            <a href="#">Delivery Information</a>
+            <a href="#">Privacy Policy</a>
+            <a href="#">Term & Conditions</a>
+            <a href="contact.html">Contact Us</a>
+        </div>
+    
+        <div class="col">
+            <h4>My Account</h4>
+            <a href="login.html">Sign In</a>
+            <a href="cart.html">View Cart</a>
+            <a href="#">My Wishlist</a>
+            <a href="#">Track My Order</a>
+            <a href="#">Help</a>
+        </div>
+    
+        <div class="col install">
+            <h4>Install App</h4>
+            <p>From App Store or Google Play</p>
+            <div class="row">
+                <img src="badges/applepay.png" class="pay-img" alt="">
+                <img src="badges/googlepay.png" class="pay-img google-pay" alt="">
+            </div>
+            <p>Secured Payment Gateways</p>
+            <img src="badges/payments.png" class="payment-gateway" alt="">
+        </div>
+    
+        <div class="copyright">
+            <p>© 2024 HarmonyHub. All rights reserved.</p>
+        </div>
+    
+    </footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    // Mobile menu toggle
+    const bar = document.getElementById('bar');
+    const nav = document.getElementById('navbar');
+    const close = document.getElementById('close');
+
+    if (bar) {
+        bar.addEventListener('click', () => {
+            nav.classList.add('active');
+        });
+    }
+    if (close) {
+        close.addEventListener('click', () => {
+            nav.classList.remove('active');
+        });
+    }
+
+    // Cart functionality
+    const cartBody = document.getElementById('cart-body');
+    const subtotalElement = document.getElementById('cart-subtotal');
+    const totalElement = document.getElementById('cart-total');
+
+    function loadCart() {
+        fetch('get_cart.php')
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error(`HTTP error! Status: ${res.status}`);
+                }
+                return res.json();
+            })
+            .then(response => {
+                console.log('Cart response:', response);
+                cartBody.innerHTML = '';
+                if (!response.success) {
+                    if (response.message.includes('Please log in')) {
+                        cartBody.innerHTML = '<tr><td colspan="6">Please log in to view your cart.</td></tr>';
+                        alert(response.message);
+                        window.location.href = 'login.html';
+                    } else {
+                        cartBody.innerHTML = `<tr><td colspan="6">Error: ${response.message}</td></tr>`;
+                    }
+                    return;
+                }
+                const cart = response.data;
+                if (cart.length === 0) {
+                    cartBody.innerHTML = '<tr><td colspan="6">Your cart is empty.</td></tr>';
+                } else {
+                    cart.forEach((item, index) => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td><i class="fa-solid fa-xmark delete-row" data-index="${index}" data-product-id="${item.product_id}"></i></td>
+                            <td><img src="${item.image}" alt=""></td>
+                            <td>${item.name}</td>
+                            <td>$${parseFloat(item.price).toFixed(2)}</td>
+                            <td><input type="number" value="${item.quantity}" min="1"></td>
+                            <td>$${(item.price * item.quantity).toFixed(2)}</td>
+                        `;
+                        cartBody.appendChild(row);
+                    });
+                }
+                calculateTotals();
+            })
+            .catch(err => {
+                console.error('Fetch error:', err);
+                cartBody.innerHTML = `<tr><td colspan="6">Error loading cart: ${err.message}</td></tr>`;
+            });
+    }
+
+    // Handle row deletion
+    cartBody.addEventListener('click', e => {
+        if (e.target.classList.contains('delete-row')) {
+            const product_id = e.target.dataset.productId;
+            fetch('delete_cart_item.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `product_id=${encodeURIComponent(product_id)}`
+            })
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error(`HTTP error! Status: ${res.status}`);
+                }
+                return res.json();
+            })
+            .then(response => {
+                console.log('Delete response:', response);
+                if (!response.success) {
+                    alert(`Failed to delete item: ${response.message}`);
+                    if (response.message.includes('Please log in')) {
+                        window.location.href = 'login.html';
+                    }
+                    return;
+                }
+                alert(response.message);
+                loadCart(); // Reload cart instead of location.reload()
+            })
+            .catch(err => {
+                console.error('Delete error:', err);
+                alert(`Failed to delete item: ${err.message}`);
+            });
+        }
+    });
+
+    // Calculate totals
+    function calculateTotals() {
+        let subtotal = 0;
+        cartBody.querySelectorAll('tr').forEach(row => {
+            if (!row.querySelector('input[type="number"]')) return;
+            const priceCell = row.querySelectorAll('td')[3];
+            const quantityInput = row.querySelector('input[type="number"]');
+            const subtotalCell = row.querySelectorAll('td')[5];
+            const price = parseFloat(priceCell.textContent.replace('$', ''));
+            const quantity = parseInt(quantityInput.value) || 1;
+            const rowTotal = price * quantity;
+            subtotal += rowTotal;
+            subtotalCell.textContent = `$${rowTotal.toFixed(2)}`;
+        });
+        subtotalElement.textContent = `$${subtotal.toFixed(2)}`;
+        totalElement.innerHTML = `<strong>$${subtotal.toFixed(2)}</strong>`;
+    }
+
+    // Update quantity
+    cartBody.addEventListener('input', e => {
+        if (e.target.type === 'number') {
+            const row = e.target.closest('tr');
+            const product_id = row.querySelector('.delete-row').dataset.productId;
+            const quantity = parseInt(e.target.value) || 1;
+            fetch('update_cart_quantity.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `product_id=${encodeURIComponent(product_id)}&quantity=${quantity}`
+            })
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error(`HTTP error! Status: ${res.status}`);
+                }
+                return res.json();
+            })
+            .then(response => {
+                console.log('Update quantity response:', response);
+                if (!response.success) {
+                    alert(`Failed to update quantity: ${response.message}`);
+                    if (response.message.includes('Please log in')) {
+                        window.location.href = 'login.html';
+                    }
+                    return;
+                }
+                calculateTotals();
+            })
+            .catch(err => {
+                console.error('Update error:', err);
+                alert(`Failed to update quantity: ${err.message}`);
+            });
+        }
+    });
+
+    loadCart();
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,150 @@
+<?php
+session_start();
+if (!isset($_SESSION['user_id'])) {
+    header("Location: index.html");
+    exit;
+}
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Harmony HUB - Blog Post</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <section id="header">
+        <a href="#"><img src="logo/logo1.png" class="logo" alt="Harmony HUB Logo"></a>
+        <div>
+            <ul id="navbar">
+                <li><a href="HH.html">Home</a></li>
+                <li><a href="shop.html">Shop</a></li>
+                <li><a class="active" href="blog.html">Blog</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="contact.html">Contact</a></li>
+                <li><a href="cart.html" id="lgcart"><i class="fa-solid fa-bag-shopping"></i></a></li>
+                <li><a href="logout.php">Logout</a></li>
+                <a href="#" id="close"><i class="fa-solid fa-xmark"></i></a>
+            </ul>
+        </div>
+        <div id="mobile">
+            <a href="cart.html"><i class="fa-solid fa-bag-shopping"></i></a>
+            <i id="bar" class="fa-solid fa-outdent"></i>
+        </div>
+    </section>
+
+    <section id="page-header" class="blog-header">
+        <h2>#readmore</h2>
+        <p>Explore our latest insights!</p>
+    </section>
+
+    <section id="blog-post" class="section-p1">
+        <div id="post-content">
+            <h2>Loading...</h2>
+        </div>
+    </section>
+
+    <footer class="section-p1">
+        <div class="col">
+            <img src="logo/logo1.png" alt="Harmony HUB Logo">
+            <h4>Contact</h4>
+            <p><strong>Address:</strong> 39/14 Sarwodaya Road, Aluthgama, Bandaragama, Sri Lanka</p>
+            <p><strong>Phone:</strong> 075-706-6739</p>
+            <p><strong>Hours:</strong> 10.00 - 20.00, Mon - Sat</p>
+        </div>
+        <div class="follow">
+            <h4>Follow Us</h4>
+            <div class="icon">
+                <i class="fa-brands fa-facebook-f"></i>
+                <i class="fa-brands fa-twitter"></i>
+                <i class="fa-brands fa-instagram"></i>
+                <i class="fa-brands fa-pinterest-p"></i>
+                <i class="fa-brands fa-youtube"></i>
+            </div>
+        </div>
+        <div class="col">
+            <h4>About</h4>
+            <a href="about.html">About Us</a>
+            <a href="#">Delivery Information</a>
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms & Conditions</a>
+            <a href="contact.html">Contact Us</a>
+        </div>
+        <div class="col">
+            <h4>My Account</h4>
+            <a href="login.html">Sign In</a>
+            <a href="cart.html">View Cart</a>
+            <a href="#">My Wishlist</a>
+            <a href="#">Track My Order</a>
+            <a href="#">Help</a>
+        </div>
+        <div class="col install">
+            <h4>Install App</h4>
+            <p>From App Store or Google Play</p>
+            <div class="row">
+                <img src="badges/applepay.png" class="pay-img" alt="Apple Pay">
+                <img src="badges/googlepay.png" class="pay-img google-pay" alt="Google Pay">
+            </div>
+            <p>Secured Payment Gateways</p>
+            <img src="badges/payments.png" class="payment-gateway" alt="Payment Gateways">
+        </div>
+        <div class="copyright">
+            <p>© 2025 HarmonyHub. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const bar = document.getElementById('bar');
+            const nav = document.getElementById('navbar');
+            const close = document.getElementById('close');
+            const postContent = document.getElementById('post-content');
+
+            if (bar) {
+                bar.addEventListener('click', () => nav.classList.add('active'));
+            }
+            if (close) {
+                close.addEventListener('click', () => nav.classList.remove('active'));
+            }
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const blogId = urlParams.get('id');
+
+            if (!blogId) {
+                postContent.innerHTML = '<h2>Blog post not found.</h2>';
+                return;
+            }
+
+            fetch(`get_blog_post.php?id=${encodeURIComponent(blogId)}`)
+                .then(res => {
+                    if (!res.ok) throw new Error(`HTTP error! Status: ${res.status}`);
+                    return res.json();
+                })
+                .then(response => {
+                    if (!response.success) {
+                        postContent.innerHTML = `<h2>Error: ${response.message}</h2>`;
+                        if (response.message.includes('Please log in')) {
+                            alert('Please log in to view this blog post.');
+                            window.location.href = 'login.html';
+                        }
+                        return;
+                    }
+                    const post = response.data;
+                    postContent.innerHTML = `
+                        <h2>${post.title}</h2>
+                        <img src="${post.image}" alt="${post.title}" class="blog-post-img">
+                        <p class="post-date">Posted on: ${new Date(post.date_posted).toLocaleDateString()}</p>
+                        <div class="post-content">${post.content}</div>
+                    `;
+                })
+                .catch(err => {
+                    console.error('Fetch error:', err);
+                    postContent.innerHTML = `<h2>Error loading blog post: ${err.message}</h2>`;
+                });
+        });
+    </script>
+</body>
+</html>

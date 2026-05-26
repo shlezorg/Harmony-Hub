@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@300&display=swap" rel="stylesheet">
+    <title>Login Page</title>
+</head>
+<body>
+    <div class="body-container">
+        <div class="container" id="container">
+
+            <div class="form-container sign-up-container">
+                <form action="signup.php" method="post">
+                    <h1>Create Account</h1>
+                    <input type="text" name="name" placeholder="Name" required />
+                    <input type="email" name="email" placeholder="Email" required />
+                    <input type="password" name="password" placeholder="Password" required />
+                    <button type="submit" class="btn-grad">Sign Up</button>
+                </form>
+            </div>
+
+
+            <div class="form-container sign-in-container">
+                <form action="login.php" method="post">
+                    <h1>Sign In</h1>
+                    <input type="email" name="email" placeholder="Email" required />
+                    <input type="password" name="password" placeholder="Password" required />
+                    <a href="#">Forgot your password?</a>
+                    <button type="submit" class="btn-grad">Sign In</button>
+                </form>
+            </div>
+
+
+            <div class="overlay-container">
+                <div class="overlay">
+                    <div class="overlay-panel overlay-left">
+                        <h1>Welcome Back!</h1>
+                        <p>Start from where you left</p>
+                        <button class="btn-grad" id="signIn">Sign In</button>
+                    </div>
+                    <div class="overlay-panel overlay-right">
+                        <h1>Hello, Buddy!</h1>
+                        <p>Join Us on a new adventure</p>
+                        <button class="btn-grad" id="signUp">Sign Up</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        
+        const signUpBtn = document.getElementById('signUp');
+        const signInBtn = document.getElementById('signIn');
+        const container = document.getElementById('container');
+
+        signUpBtn.addEventListener('click', () => {
+            container.classList.add('right-panel-active');
+        });
+
+        signInBtn.addEventListener('click', () => {
+            container.classList.remove('right-panel-active');
+        });
+    </script>
+    
+    <script type="text/javascript" src="script.js"></script>
+</body>
+</html>
